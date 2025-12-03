@@ -3,6 +3,25 @@
 Backend API for DIGI AATA Wooden Toys E-Commerce Platform
 
 ## Quick Start
+# Windows
+1.Create Virtual Environment (Windows)
+python -m venv venv
+venv\Scripts\activate
+pip install -r requirements.txt
+# Initialize Database
+py -3 init_db.py
+- Create all database tables
+- Create admin user (admin@digiaata.com / admin123)
+- Populate 6 categories
+- Add 24 products
+# Run Server
+uvicorn app.main:app --reload
+
+
+Server runs on: http://localhost:8000
+API Docs: http://localhost:8000/docs
+
+# Mac 
 
 ### 1. Create Virtual Environment
 python3 -m venv venvsource venv/bin/activate # Mac/Linux### 2. Install Dependencies
@@ -76,5 +95,12 @@ Use Swagger UI at http://localhost:8000/docs
 
 ---
 
-Last Updated: November 24, 2025
+Last Updated: December 3, 2025
+
+Added products url links to database and pushed to git 
+
+
+
+
+
 Version: 1.0.0
