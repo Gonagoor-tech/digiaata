@@ -104,3 +104,152 @@ Added products url links to database and pushed to git
 
 
 Version: 1.0.0
+
+1. Features
+
+User Registration & Login (JWT Authentication)
+
+Bcrypt-based secure password hashing
+
+Products, Categories, Cart, Orders, and Address APIs
+
+PostgreSQL relational database
+
+FastAPI documentation (Swagger + ReDoc)
+
+Clean modular project folder structure
+
+2. Technologies Used
+Component	Tech Stack
+Backend API	FastAPI
+Database	PostgreSQL 16
+ORM	SQLAlchemy
+Auth	JWT + Passlib Bcrypt
+Server	Uvicorn
+3. Prerequisites
+
+Install the following:
+
+Python 3.10+
+
+PostgreSQL 14/15/16
+
+Git
+
+pip
+
+4. Project Setup
+Step 1 — Clone the repository
+git clone <your-repo-url>
+cd digiaata-main
+
+Step 2 — Create & activate a virtual environment
+python -m venv venvsource
+venvsource\Scripts\activate
+
+Step 3 — Install dependencies
+pip install fastapi uvicorn sqlalchemy psycopg2-binary alembic
+pip install "python-jose[cryptography]"
+pip install "passlib[bcrypt]"
+pip install python-multipart email-validator pydantic-settings dotenv
+
+5. PostgreSQL Setup
+Step 1 — Start PostgreSQL manually
+"C:\Program Files\PostgreSQL\16\bin\pg_ctl.exe" start -D "C:\PostgresData\data" -l "C:\PostgresData\logs\postgres.log"
+
+
+Verify:
+
+netstat -ano | findstr 5432
+
+Step 2 — Create the database
+psql -U postgres -c "CREATE DATABASE digi_aata;"
+
+Step 3 — Set environment variables
+
+Create .env in project root:
+
+DATABASE_URL=postgresql+psycopg2://postgres:postgres123@localhost:5432/digi_aata
+SECRET_KEY=your-secret-key
+ALGORITHM=HS256
+ACCESS_TOKEN_EXPIRE_MINUTES=30
+
+6. Run the Backend Server
+python -m uvicorn app.main:app --reload
+
+
+Open docs:
+
+http://127.0.0.1:8000/docs
+
+7. Database Troubleshooting & Fixes
+FIX 1 — bcrypt error
+
+You may see:
+
+AttributeError: module 'bcrypt' has no attribute '__about__'
+
+
+Solution:
+
+pip uninstall passlib bcrypt -y
+pip install bcrypt==4.0.1
+pip install "passlib[bcrypt]"
+
+FIX 2 — "id cannot be null" for users table
+
+If inserting a user fails:
+
+psycopg2.errors.NotNullViolation: null value in column "id"
+
+
+Run this SQL:
+
+CREATE SEQUENCE users_id_seq OWNED BY users.id;
+ALTER TABLE users ALTER COLUMN id SET DEFAULT nextval('users_id_seq');
+SELECT setval('users_id_seq', COALESCE((SELECT MAX(id)+1 FROM users), 1), false);
+
+FIX 3 — Test manual user insert
+INSERT INTO users (email,password_hash,full_name,phone,role,is_active,created_at)
+VALUES ('test@example.com','hash','Test','000','user',true,now()) RETURNING id;
+
+8. API Endpoints Summary
+User APIs
+Method	Endpoint	Description
+POST	/api/auth/register	Register new user
+POST	/api/auth/login	Login & receive JWT
+GET	/api/users/me	Get logged-in user
+
+Example registration:
+
+{
+  "email": "jyothi@example.com",
+  "full_name": "Jyothi Test",
+  "phone": "9999999999",
+  "password": "StrongPass123"
+}
+
+9. Verify Registration Works
+
+Successful response:
+
+{
+  "email": "jyothi@example.com",
+  "full_name": "Jyothi Test",
+  "phone": "9999999999",
+  "id": 3,
+  "role": "user",
+  "is_active": true,
+  "created_at": "2025-12-11T07:19:20.501368"
+}
+
+10. Folder Structure
+app/
+ ├── main.py
+ ├── database.py
+ ├── models/
+ ├── routers/
+ ├── schemas/
+ ├── crud/
+ ├── utils/
+ └── config/

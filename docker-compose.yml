@@ -1,0 +1,16 @@
+version: "3.8"
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: Joy
+      POSTGRES_PASSWORD: caty@123docker-compose up -d
+
+      POSTGRES_DB: digi_aata
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
